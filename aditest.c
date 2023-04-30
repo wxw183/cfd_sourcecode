@@ -2,7 +2,7 @@
 #include<math.h>
 #include<malloc.h>
 
-double dx=0.1,dy=0.1,dt=0.05;
+double dx=0.05,dy=0.05,dt=0.005;
 double alpha;
 double pi=3.141592653589793238462643383279502884197169399375105820974944592;
 
@@ -33,15 +33,20 @@ int main(){
     static double x,t,y;
     //设定初始条件
     for(i=1;i<im;i++){
-        for(j=1;j<jm;j++)u[0][i][j]=0;
+        for(j=1;j<jm;j++){
+            y=dy*j;
+            x=dx*i;
+            t=dt*n;
+            u[0][i][j]=x*x+y*y;
+        }
     }
     //设定边界条件1
     for(n=0;n<=nm;n++){
         for(j=1;j<jm;j++){
             y=dy*j;
             t=dt*n;
-            u[n][0][j]=20+80*y;
-            u[n][im][j]=20+80*(y-exp(-0.5*pi*pi*t)*sin(0.5*pi*y));
+            u[n][0][j]=y*y+4*t;
+            u[n][im][j]=1+y*y+4*t;
         }
     }
     //设定边界条件2
@@ -49,8 +54,8 @@ int main(){
         for(i=0;i<=im;i++){
             x=dx*i;
             t=dt*n;
-            u[n][i][0]=20;
-            u[n][i][jm]=20+80*(1-exp(-0.5*pi*pi*t)*sin(0.5*pi*x));
+            u[n][i][0]=x*x+4*t;
+            u[n][i][jm]=1+x*x+4*t;
         }
     }
     double d[im];
@@ -85,14 +90,14 @@ int main(){
             d[im-1]+=0.5*alpha*u[n+1][i][im];
             double_star=chasing(im-1,d+1);
             for(j=1;j<im;j++){
-                u[n+1][i][j]=double_star[i-1];
+                u[n+1][i][j]=double_star[j-1];
             }
             free(double_star);
         }
     }
     //输出数据
     FILE *fp;
-    fp=fopen("dataout.csv","w");
+    fp=fopen("dataouttest.csv","w");
     for(n=0;n<=nm;n++){
         for(i=0;i<=im;i++){
             for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[n][i][j]);
@@ -100,7 +105,7 @@ int main(){
         }
     }
     fclose(fp);
-    fp=fopen("errorout.csv","w");
+    fp=fopen("errorouttest.csv","w");
     for(n=0;n<=nm;n++){
         for(i=0;i<=im;i++){
             for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[n][i][j]-u_exact(i*dx,j*dy,n*dt));
@@ -108,7 +113,7 @@ int main(){
         }
     }
     fclose(fp);
-    fp=fopen("exact.csv","w");
+    fp=fopen("exacttest.csv","w");
     for(n=0;n<=nm;n++){
         for(i=0;i<=im;i++){
             for(j=0;j<=jm;j++)fprintf(fp,"%g,",u_exact(i*dx,j*dy,n*dt));
@@ -151,5 +156,5 @@ double* chasing(int order,double *d){
 }
 
 double u_exact(double x,double y,double t){
-    return 20+80*(y-exp(-0.5*pi*pi*t)*sin(0.5*pi*x)*sin(0.5*pi*y));
+    return x*x+y*y+4*t;
 }
