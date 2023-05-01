@@ -15,6 +15,8 @@ double u_exact(double x,double y,double t);
 double delta_x2(double **u,int i,int j);
 double delta_y2(double **u,int i,int j);
 double* chasing(int order,double *d);
+double error_norms(double ***u,int im);
+double epsilon_1(double **u_num,int im);
 
 int main(int argc,char *argv[]){
     dx=dy=atof(argv[1]);
@@ -31,6 +33,8 @@ int main(int argc,char *argv[]){
     fp=fopen("dataout.csv","w");
     fclose(fp);
     fp=fopen("errorout.csv","w");
+    fclose(fp);
+    fp=fopen("eh.csv","w");
     fclose(fp);
     static double x,t,y;
     alpha=dt/dx/dx;
@@ -59,7 +63,7 @@ int main(int argc,char *argv[]){
         }
     }
 
-    for(n=0;n<nm;n++){
+    for(n=0;n<=nm;n++){
 
         u[1]=(double **)malloc((im+1)*sizeof(double *));
         for(i=0;i<=im;i++){
@@ -147,6 +151,18 @@ int main(int argc,char *argv[]){
         }
     
         fclose(fp);
+
+        fp=fopen("eh.csv","a");
+        fprintf(fp,"%g,%g\n",dt*n,log10(error_norms(u,im)));
+        fclose(fp);
+
+        if(n*dt<1+dt&&n*dt>1-dt){
+            fp=fopen("epsilon_1","w");
+            fprintf(fp,"%g\n",epsilon_1(u[0],im));
+            fclose(fp);
+
+        }
+
         for(i=0;i<=im;i++){
             free(u[0][i]);
         }
@@ -190,4 +206,24 @@ double* chasing(int order,double *d){
 
 double u_exact(double x,double y,double t){
     return 20+80*(y-exp(-0.5*pi*pi*t)*sin(0.5*pi*x)*sin(0.5*pi*y));
+}
+
+double error_norms(double ***u,int im){
+    double emax=0.0;
+    for(i=0;i<im;i++){
+        for(j=0;j<im;j++){
+            if(emax<fabs(u[1][i][j]-u[0][i][j]))emax=fabs(u[1][i][j]-u[0][i][j]);
+        }
+    }
+    return emax;
+}
+
+double epsilon_1(double **u_num,int im){
+    double emax=0.0;
+    for(i=0;i<im;i++){
+        for(j=0;j<im;j++){
+            if(emax<fabs(u_num[i][j]-u_exact(i*dx,j*dy,n*dt)))emax=fabs(u_num[i][j]-u_exact(i*dx,j*dy,n*dt));
+        }
+    }
+    return emax;
 }
