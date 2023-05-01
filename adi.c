@@ -1,8 +1,10 @@
 #include<stdio.h>
 #include<math.h>
 #include<malloc.h>
+#include<string.h>
+#include<stdlib.h>
 
-double dx=0.025,dy=0.025,dt=0.005;
+double dx,dy,dt;
 double alpha;
 double pi=3.141592653589793238462643383279502884197169399375105820974944592;
 
@@ -14,7 +16,15 @@ double delta_x2(double **u,int i,int j);
 double delta_y2(double **u,int i,int j);
 double* chasing(int order,double *d);
 
-int main(){
+int main(int argc,char *argv[]){
+    dx=dy=atof(argv[1]);
+    dt=atof(argv[2]);
+    double phisical_time=atof(argv[3]);
+    if(argc!=4){
+        printf("参数数量错误！\n");
+        exit(1);
+    }
+    
     FILE *fp;
     fp=fopen("exact.csv","w");
     fclose(fp);
@@ -24,7 +34,7 @@ int main(){
     fclose(fp);
     static double x,t,y;
     alpha=dt/dx/dx;
-    int im=(int)(1.0/dx),jm=(int)(1.0/dy),nm=(int)(1.0/dt),count;
+    int im=(int)(1.0/dx),jm=(int)(1.0/dy),nm=(int)(phisical_time/dt),count;
     double ***u,**u_star;
     u=(double ***)malloc((2)*sizeof(double **));
     
