@@ -1,3 +1,4 @@
+gcc adi.c
 mkdir 01
 copy /y adi.exe 01
 mkdir 02
