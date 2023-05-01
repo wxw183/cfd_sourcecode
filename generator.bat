@@ -1,4 +1,4 @@
-gcc adi.c
+gcc adi.c -o adi.exe
 mkdir 01
 copy /y adi.exe 01
 mkdir 02
@@ -34,3 +34,4 @@ cd ..
 cd 07
 adi 0.05 0.04 10
 cd ..
+python adi.py
