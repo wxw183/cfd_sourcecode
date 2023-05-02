@@ -27,8 +27,8 @@ int main(){
         printf("参数数量错误！\n");
         exit(1);
     }*/
-    dx=dy=0.5;
-    dt=0.5;
+    dx=dy=0.05;
+    dt=0.05;
     double physical_time=2.0;
     FILE *fp;
     fp=fopen("exact.csv","w");
@@ -62,7 +62,7 @@ int main(){
             y=dy*j;
             x=dx*i;
             t=dt*n;
-            u[0][i][j]=2-x-y;
+            u[0][i][j]=x*x+y*y;
         }
     }
 
@@ -78,8 +78,8 @@ int main(){
             for(j=1;j<jm;j++){
                 y=dy*j;
                 t=dt*(count+n);
-                u[count][0][j]=2-y;
-                u[count][im][j]=1-y;
+                u[count][0][j]=y*y+4*t;
+                u[count][im][j]=1+y*y+4*t;
             }
         }
         //设定边界条件2
@@ -87,8 +87,8 @@ int main(){
             for(i=0;i<=im;i++){
                 x=dx*i;
                 t=dt*(n+count);
-                u[count][i][0]=2-x;
-                u[count][i][jm]=1-x;
+                u[count][i][0]=x*x+4*t;
+                u[count][i][jm]=1+x*x+4*t;
             }
         }
         double d[im];
@@ -208,7 +208,7 @@ double* chasing(int order,double *d){
 }
 
 double u_exact(double x,double y,double t){
-    return 2-x-y;
+    return x*x+y*y+4*t;
 }
 
 double error_norms(double ***u,int im){

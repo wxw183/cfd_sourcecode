@@ -15,8 +15,8 @@ double u_exact(double x,double y,double t);
 double delta_x2(double **u,int i,int j);
 double delta_y2(double **u,int i,int j);
 double* chasing(int order,double *d);
-double error_norms(double ***u,int im);
-double epsilon_1(double **u_num,int im);
+double error_norms(double ***u,int im,int jm);
+double epsilon_1(double **u_num,int im,int jm);
 
 int main(int argc,char *argv[]){
     dx=dy=atof(argv[1]);
@@ -119,7 +119,7 @@ int main(int argc,char *argv[]){
             d[1]+=0.5*alpha*u[1][i][0];
             d[im-1]+=0.5*alpha*u[1][i][im];
             double_star=chasing(jm-1,d+1);
-            for(j=1;j<im;j++){
+            for(j=1;j<jm;j++){
                 u[1][i][j]=double_star[j-1];
             }
             free(double_star);
@@ -153,12 +153,12 @@ int main(int argc,char *argv[]){
         fclose(fp);
 
         fp=fopen("eh.csv","a");
-        fprintf(fp,"%g,%g\n",dt*n,log10(error_norms(u,im)));
+        fprintf(fp,"%g,%g\n",dt*n,log10(error_norms(u,im,jm)));
         fclose(fp);
 
         if(n*dt<1+dt&&n*dt>1-dt){
             fp=fopen("epsilon_1","w");
-            fprintf(fp,"%g\n",epsilon_1(u[0],im));
+            fprintf(fp,"%g\n",epsilon_1(u[0],im,jm));
             fclose(fp);
 
         }
@@ -208,20 +208,20 @@ double u_exact(double x,double y,double t){
     return 20+80*(y-exp(-0.5*pi*pi*t)*sin(0.5*pi*x)*sin(0.5*pi*y));
 }
 
-double error_norms(double ***u,int im){
+double error_norms(double ***u,int im,int jm){
     double emax=0.0;
     for(i=0;i<im;i++){
-        for(j=0;j<im;j++){
+        for(j=0;j<jm;j++){
             if(emax<fabs(u[1][i][j]-u[0][i][j]))emax=fabs(u[1][i][j]-u[0][i][j]);
         }
     }
     return emax;
 }
 
-double epsilon_1(double **u_num,int im){
+double epsilon_1(double **u_num,int im,int jm){
     double emax=0.0;
     for(i=0;i<im;i++){
-        for(j=0;j<im;j++){
+        for(j=0;j<jm;j++){
             if(emax<fabs(u_num[i][j]-u_exact(i*dx,j*dy,n*dt)))emax=fabs(u_num[i][j]-u_exact(i*dx,j*dy,n*dt));
         }
     }
