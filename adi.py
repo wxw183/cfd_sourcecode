@@ -69,6 +69,10 @@ ax.plot(logdx,epsilon_1)
 ax.set_xlabel("$log\Delta x$")
 ax.set_ylabel("$log\epsilon$")
 ax.set_title("误差与空间步长关系")
+formatter = mpl.ticker.ScalarFormatter(useMathText=True)
+formatter.set_scientific(True)
+formatter.set_powerlimits((-1,1))
+ax.xaxis.set_major_formatter(formatter)
 plt.savefig("误差与空间步长关系.pdf")
 
 

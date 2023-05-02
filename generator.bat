@@ -1,4 +1,4 @@
-gcc adi.c -o adi.exe
+gcc -o adi.exe adi.c -fopenmp
 mkdir 01
 copy /y adi.exe 01
 mkdir 02
@@ -14,24 +14,24 @@ copy /y adi.exe 06
 mkdir 07
 copy /y adi.exe 07
 cd 01
-adi 0.1 0.02 10
+adi 0.1 0.02 10 8
 cd ..
 cd 02
-adi 0.05 0.02 10
+adi 0.05 0.02 10 8
 cd ..
 cd 03
-adi 0.025 0.02 10
+adi 0.025 0.02 10 8
 cd ..
 cd 04
-adi 0.05 0.005 10
+adi 0.05 0.005 10 8
 cd ..
 cd 05
-adi 0.05 0.01 10
+adi 0.05 0.01 10 8
 cd ..
 cd 06
-adi 0.05 0.02 10
+adi 0.05 0.02 10 8
 cd ..
 cd 07
-adi 0.05 0.04 10
+adi 0.05 0.04 10 8
 cd ..
 python adi.py
