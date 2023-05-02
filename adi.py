@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import csv
 from pylab import mpl
 # 设置显示中文字体
-mpl.rcParams["font.sans-serif"] = ["SimHei"]
+mpl.rcParams["font.sans-serif"] = ["Microsoft YaHei"]
 
 mpl.rcParams["axes.unicode_minus"] = False
 
@@ -37,6 +37,10 @@ ax.plot(logdt,epsilon)
 ax.set_xlabel("$log\Delta t$")
 ax.set_ylabel("$log\epsilon$")
 ax.set_title("误差与时间步长关系")
+formatter = mpl.ticker.ScalarFormatter(useMathText=True)
+formatter.set_scientific(True)
+formatter.set_powerlimits((-1,1))
+ax.xaxis.set_major_formatter(formatter)
 plt.savefig("误差与时间步长关系.pdf")
 
 #与空间步长关系,时间步长Δt = 0.02， 网格间距为 x = 0.1，0.05，0.025的均匀网格

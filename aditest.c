@@ -1,8 +1,10 @@
 #include<stdio.h>
 #include<math.h>
 #include<malloc.h>
+#include<string.h>
+#include<stdlib.h>
 
-double dx=0.05,dy=0.05,dt=0.005;
+double dx,dy,dt;
 double alpha;
 double pi=3.141592653589793238462643383279502884197169399375105820974944592;
 
@@ -13,61 +15,92 @@ double u_exact(double x,double y,double t);
 double delta_x2(double **u,int i,int j);
 double delta_y2(double **u,int i,int j);
 double* chasing(int order,double *d);
+double error_norms(double ***u,int im);
+double epsilon_1(double **u_num,int im);
 
+//int main(int argc,char *argv[]){
 int main(){
+    /*dx=dy=atof(argv[1]);
+    dt=atof(argv[2]);
+    double phisical_time=atof(argv[3]);
+    if(argc!=4){
+        printf("参数数量错误！\n");
+        exit(1);
+    }*/
+    dx=dy=0.5;
+    dt=0.5;
+    double physical_time=2.0;
+    FILE *fp;
+    fp=fopen("exact.csv","w");
+    fclose(fp);
+    fp=fopen("dataout.csv","w");
+    fclose(fp);
+    fp=fopen("errorout.csv","w");
+    fclose(fp);
+    fp=fopen("eh.csv","w");
+    fclose(fp);
+    static double x,t,y;
     alpha=dt/dx/dx;
-    int im=(int)(1.0/dx),jm=(int)(1.0/dy),nm=(int)(1.0/dt);
+    int im=(int)(1.0/dx),jm=(int)(1.0/dy),nm=(int)(physical_time/dt),count;
     double ***u,**u_star;
-    u=(double ***)malloc((nm+1)*sizeof(double **));
-    for(n=0;n<=nm;n++){
-        u[n]=(double **)malloc((im+1)*sizeof(double *));
-        for(i=0;i<=im;i++){
-            u[n][i]=(double *)malloc((jm+1)*sizeof(double));
-        }
+    u=(double ***)malloc((2)*sizeof(double **));
+    
+    u[0]=(double **)malloc((im+1)*sizeof(double *));
+    for(i=0;i<=im;i++){
+        u[0][i]=(double *)malloc((jm+1)*sizeof(double));
     }
+    
 
     u_star=(double **)malloc((im+1)*sizeof(double *));
     for(i=0;i<=im;i++){
         u_star[i]=(double *)malloc((jm+1)*sizeof(double));
     }
-    static double x,t,y;
-    //设定初始条件
+    
+ //设定初始条件
     for(i=1;i<im;i++){
         for(j=1;j<jm;j++){
             y=dy*j;
             x=dx*i;
             t=dt*n;
-            u[0][i][j]=x*x+y*y;
+            u[0][i][j]=2-x-y;
         }
     }
-    //设定边界条件1
+
     for(n=0;n<=nm;n++){
-        for(j=1;j<jm;j++){
-            y=dy*j;
-            t=dt*n;
-            u[n][0][j]=y*y+4*t;
-            u[n][im][j]=1+y*y+4*t;
-        }
-    }
-    //设定边界条件2
-    for(n=0;n<=nm;n++){
+
+        u[1]=(double **)malloc((im+1)*sizeof(double *));
         for(i=0;i<=im;i++){
-            x=dx*i;
-            t=dt*n;
-            u[n][i][0]=x*x+4*t;
-            u[n][i][jm]=1+x*x+4*t;
+            u[1][i]=(double *)malloc((jm+1)*sizeof(double));
         }
-    }
-    double d[im];
-    for(n=0;n<nm;n++){
+           
+        //设定边界条件1
+        for(count=0;count<2;count++){
+            for(j=1;j<jm;j++){
+                y=dy*j;
+                t=dt*(count+n);
+                u[count][0][j]=2-y;
+                u[count][im][j]=1-y;
+            }
+        }
+        //设定边界条件2
+        for(count=0;count<2;count++){
+            for(i=0;i<=im;i++){
+                x=dx*i;
+                t=dt*(n+count);
+                u[count][i][0]=2-x;
+                u[count][i][jm]=1-x;
+            }
+        }
+        double d[im];
+    
         //第一个方向
         for(j=1;j<jm;j++){
-            u_star[0][j]=0.5*(u[n][0][j]+u[n+1][0][j])-0.25*alpha*(delta_y2((double **)u[n+1],0,j)-delta_y2((double **)u[n],0,j));
-            u_star[im][j]=0.5*(u[n][0][j]+u[n+1][0][j])-0.25*alpha*(delta_y2((double **)u[n+1],im,j)-delta_y2((double **)u[n],im,j));
+            u_star[0][j]=0.5*(u[0][0][j]+u[1][0][j])-0.25*alpha*(delta_y2((double **)u[1],0,j)-delta_y2((double **)u[0],0,j));
+            u_star[im][j]=0.5*(u[0][im][j]+u[1][im][j])-0.25*alpha*(delta_y2((double **)u[1],im,j)-delta_y2((double **)u[0],im,j));
             //设置d向量
             
             for(i=1;i<im;i++){
-                d[i]=(1-alpha)*u[n][i][j]+0.5*alpha*(u[n][i][j+1]+u[n][i][j-1]);
+                d[i]=(1-alpha)*u[0][i][j]+0.5*alpha*(u[0][i][j+1]+u[0][i][j-1]);
             }
             d[1]+=0.5*alpha*u_star[0][j];
             d[im-1]+=0.5*alpha*u_star[im][j];
@@ -86,41 +119,60 @@ int main(){
             for(j=1;j<jm;j++){
                 d[j]=u_star[i][j]+0.5*alpha*delta_x2((double **)u_star,i,j);
             }
-            d[1]+=0.5*alpha*u[n+1][i][0];
-            d[im-1]+=0.5*alpha*u[n+1][i][im];
-            double_star=chasing(im-1,d+1);
+            d[1]+=0.5*alpha*u[1][i][0];
+            d[im-1]+=0.5*alpha*u[1][i][im];
+            double_star=chasing(jm-1,d+1);
             for(j=1;j<im;j++){
-                u[n+1][i][j]=double_star[j-1];
+                u[1][i][j]=double_star[j-1];
             }
             free(double_star);
         }
-    }
+    
     //输出数据
-    FILE *fp;
-    fp=fopen("dataouttest.csv","w");
-    for(n=0;n<=nm;n++){
+    
+        fp=fopen("dataout.csv","a");
+    
         for(i=0;i<=im;i++){
-            for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[n][i][j]);
+            for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[0][i][j]);
             fprintf(fp,"\n");
         }
-    }
-    fclose(fp);
-    fp=fopen("errorouttest.csv","w");
-    for(n=0;n<=nm;n++){
+    
+        fclose(fp);
+        fp=fopen("errorout.csv","a");
+    
         for(i=0;i<=im;i++){
-            for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[n][i][j]-u_exact(i*dx,j*dy,n*dt));
+            for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[0][i][j]-u_exact(i*dx,j*dy,n*dt));
             fprintf(fp,"\n");
         }
-    }
-    fclose(fp);
-    fp=fopen("exacttest.csv","w");
-    for(n=0;n<=nm;n++){
+    
+        fclose(fp);
+        fp=fopen("exact.csv","a");
+    
         for(i=0;i<=im;i++){
             for(j=0;j<=jm;j++)fprintf(fp,"%g,",u_exact(i*dx,j*dy,n*dt));
             fprintf(fp,"\n");
         }
+    
+        fclose(fp);
+
+        fp=fopen("eh.csv","a");
+        fprintf(fp,"%g,%g\n",dt*n,log10(error_norms(u,im)));
+        fclose(fp);
+
+        if(n*dt<1+dt&&n*dt>1-dt){
+            fp=fopen("epsilon_1","w");
+            fprintf(fp,"%g\n",epsilon_1(u[0],im));
+            fclose(fp);
+
+        }
+
+        for(i=0;i<=im;i++){
+            free(u[0][i]);
+        }
+        free(u[0]);
+        u[0]=u[1];
     }
-    fclose(fp);
+
 
     return 0;
 }
@@ -156,5 +208,25 @@ double* chasing(int order,double *d){
 }
 
 double u_exact(double x,double y,double t){
-    return x*x+y*y+4*t;
+    return 2-x-y;
+}
+
+double error_norms(double ***u,int im){
+    double emax=0.0;
+    for(i=0;i<im;i++){
+        for(j=0;j<im;j++){
+            if(emax<fabs(u[1][i][j]-u[0][i][j]))emax=fabs(u[1][i][j]-u[0][i][j]);
+        }
+    }
+    return emax;
+}
+
+double epsilon_1(double **u_num,int im){
+    double emax=0.0;
+    for(i=0;i<im;i++){
+        for(j=0;j<im;j++){
+            if(emax<fabs(u_num[i][j]-u_exact(i*dx,j*dy,n*dt)))emax=fabs(u_num[i][j]-u_exact(i*dx,j*dy,n*dt));
+        }
+    }
+    return emax;
 }

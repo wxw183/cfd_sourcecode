@@ -93,7 +93,7 @@ int main(int argc,char *argv[]){
         //第一个方向
         for(j=1;j<jm;j++){
             u_star[0][j]=0.5*(u[0][0][j]+u[1][0][j])-0.25*alpha*(delta_y2((double **)u[1],0,j)-delta_y2((double **)u[0],0,j));
-            u_star[im][j]=0.5*(u[0][0][j]+u[1][0][j])-0.25*alpha*(delta_y2((double **)u[1],im,j)-delta_y2((double **)u[0],im,j));
+            u_star[im][j]=0.5*(u[0][im][j]+u[1][im][j])-0.25*alpha*(delta_y2((double **)u[1],im,j)-delta_y2((double **)u[0],im,j));
             //设置d向量
             
             for(i=1;i<im;i++){
@@ -118,7 +118,7 @@ int main(int argc,char *argv[]){
             }
             d[1]+=0.5*alpha*u[1][i][0];
             d[im-1]+=0.5*alpha*u[1][i][im];
-            double_star=chasing(im-1,d+1);
+            double_star=chasing(jm-1,d+1);
             for(j=1;j<im;j++){
                 u[1][i][j]=double_star[j-1];
             }
