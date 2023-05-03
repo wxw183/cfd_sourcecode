@@ -40,7 +40,7 @@ ax.set_title("误差与时间步长关系")
 formatter = mpl.ticker.ScalarFormatter(useMathText=True)
 formatter.set_scientific(True)
 formatter.set_powerlimits((-1,1))
-ax.xaxis.set_major_formatter(formatter)
+ax.yaxis.set_major_formatter(formatter)
 plt.savefig("误差与时间步长关系.pdf")
 
 #与空间步长关系,时间步长Δt = 0.02， 网格间距为 x = 0.1，0.05，0.025的均匀网格
@@ -72,7 +72,7 @@ ax.set_title("误差与空间步长关系")
 formatter = mpl.ticker.ScalarFormatter(useMathText=True)
 formatter.set_scientific(True)
 formatter.set_powerlimits((-1,1))
-ax.xaxis.set_major_formatter(formatter)
+ax.yaxis.set_major_formatter(formatter)
 plt.savefig("误差与空间步长关系.pdf")
 
 
