@@ -94,7 +94,7 @@ for r in range(0,len(table)):
         table[r][c]=float(table[r][c])
     t[r]=table[r][0]
     e[r]=table[r][1]
-ax.plot(t,e,label="$\Delta x=0.1,\Delta y=0.02$",linewidth=0.4)
+ax.plot(t,e,label="$\Delta x=0.1,\Delta t=0.02$",linewidth=0.4)
 
 infile=open("02/eh.csv",'r')
 table=[]
@@ -110,7 +110,7 @@ for r in range(0,len(table)):
     e[r]=table[r][1]
 
 
-ax.plot(t,e,label="$\Delta x=0.05,\Delta y=0.02$",linewidth=0.4)
+ax.plot(t,e,label="$\Delta x=0.05,\Delta t=0.02$",linewidth=0.4)
 
 infile=open("03/eh.csv",'r')
 table=[]
@@ -124,7 +124,7 @@ for r in range(0,len(table)):
         table[r][c]=float(table[r][c])
     t[r]=table[r][0]
     e[r]=table[r][1]
-ax.plot(t,e,label="$\Delta x=0.025,\Delta y=0.02$",linewidth=0.4)
+ax.plot(t,e,label="$\Delta x=0.025,\Delta t=0.02$",linewidth=0.4)
 
 infile=open("04/eh.csv",'r')
 table=[]
@@ -138,7 +138,7 @@ for r in range(0,len(table)):
         table[r][c]=float(table[r][c])
     t[r]=table[r][0]
     e[r]=table[r][1]
-ax.plot(t,e,label="$\Delta x=0.05,\Delta y=0.005$",linewidth=0.4)
+ax.plot(t,e,label="$\Delta x=0.05,\Delta t=0.005$",linewidth=0.4)
 
 infile=open("05/eh.csv",'r')
 table=[]
@@ -152,7 +152,7 @@ for r in range(0,len(table)):
         table[r][c]=float(table[r][c])
     t[r]=table[r][0]
     e[r]=table[r][1]
-ax.plot(t,e,label="$\Delta x=0.05,\Delta y=0.01$",linewidth=0.4)
+ax.plot(t,e,label="$\Delta x=0.05,\Delta t=0.01$",linewidth=0.4)
 
 infile=open("06/eh.csv",'r')
 table=[]
@@ -166,7 +166,7 @@ for r in range(0,len(table)):
         table[r][c]=float(table[r][c])
     t[r]=table[r][0]
     e[r]=table[r][1]
-ax.plot(t,e,label="$\Delta x=0.05,\Delta y=0.02$",linewidth=0.4)
+ax.plot(t,e,label="$\Delta x=0.05,\Delta t=0.02$",linewidth=0.4)
 
 infile=open("07/eh.csv",'r')
 table=[]
@@ -180,7 +180,7 @@ for r in range(0,len(table)):
         table[r][c]=float(table[r][c])
     t[r]=table[r][0]
     e[r]=table[r][1]
-ax.plot(t,e,label="$\Delta x=0.05,\Delta y=0.04$",linewidth=0.4)
+ax.plot(t,e,label="$\Delta x=0.05,\Delta t=0.04$",linewidth=0.4)
 
 
 ax.set_xlabel("t(s)");ax.set_ylabel("$log_{10}E_h$")
