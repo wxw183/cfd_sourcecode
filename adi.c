@@ -36,6 +36,10 @@ int main(int argc,char *argv[]){
     fclose(fp);
     fp=fopen("errorout.csv","w");
     fclose(fp);
+    fp=fopen("dataout1.csv","w");
+    fclose(fp);
+    fp=fopen("errorout1.csv","w");
+    fclose(fp);
     fp=fopen("eh.csv","w");
     fclose(fp);
     static double x,t,y;
@@ -133,7 +137,7 @@ int main(int argc,char *argv[]){
         
     //输出数据
     
-        /*fp=fopen("dataout.csv","a");
+        fp=fopen("dataout.csv","a");
     
         for(i=0;i<=im;i++){
             for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[0][i][j]);
@@ -141,7 +145,7 @@ int main(int argc,char *argv[]){
         }
     
         fclose(fp);
-        fp=fopen("errorout.csv","a");
+        /*fp=fopen("errorout.csv","a");
     
         for(i=0;i<=im;i++){
             for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[0][i][j]-u_exact(i*dx,j*dy,n*dt));
@@ -160,13 +164,22 @@ int main(int argc,char *argv[]){
 
         fp=fopen("eh.csv","a");
         fprintf(fp,"%g,%g\n",dt*n,log10(error_norms(u,im,jm)));
-        fprintf(stdout,"%g,%g\n",dt*n,log10(error_norms(u,im,jm)));
+        //fprintf(stdout,"%g,%g\n",dt*n,log10(error_norms(u,im,jm)));
         fclose(fp);
 
         if(n*dt<1+dt&&n*dt>1-dt){
             fp=fopen("epsilon_1","w");
             fprintf(fp,"%g\n",epsilon_1(u[0],im,jm));
             fclose(fp);
+        }
+
+        if(n*dt<0.2+dt&&n*dt>0.2-dt){
+            fp=fopen("dataout1.csv","a");
+    
+            for(i=0;i<=im;i++){
+                for(j=0;j<=jm;j++)fprintf(fp,"%g,",u[0][i][j]);
+                fprintf(fp,"\n");
+            }
 
         }
 
